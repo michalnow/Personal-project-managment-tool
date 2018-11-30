@@ -12,7 +12,7 @@
 .factorypath
 .gradle
 .idea
-.metadata/
+/.metadata/
 .project
 .recommenders
 .settings
