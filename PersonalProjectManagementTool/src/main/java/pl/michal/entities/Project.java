@@ -2,13 +2,7 @@ package pl.michal.entities;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -39,10 +33,14 @@ public class Project {
 	private Date endDate;
 	
 	@JsonFormat(pattern = "yyyy-mm-dd")
+	@Column(updatable = false)
 	private Date createdAt;
 	
 	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date updatedAt;
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
+	private Backlog backlog;
 
 	public Project() {
 	}
@@ -109,6 +107,14 @@ public class Project {
 
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public Backlog getBacklog() {
+		return backlog;
+	}
+
+	public void setBacklog(Backlog backlog) {
+		this.backlog = backlog;
 	}
 
 	@PrePersist
