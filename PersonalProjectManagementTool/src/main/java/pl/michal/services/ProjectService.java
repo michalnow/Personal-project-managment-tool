@@ -3,8 +3,10 @@ package pl.michal.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import pl.michal.entities.Backlog;
 import pl.michal.entities.Project;
 import pl.michal.exceptions.ProjectIdException;
+import pl.michal.repositories.BacklogRepository;
 import pl.michal.repositories.ProjectRepository;
 
 @Service
@@ -13,11 +15,26 @@ public class ProjectService {
 	@Autowired
 	private ProjectRepository projectRepository;
 
+	@Autowired
+	private BacklogRepository backlogRepository;
+
 	public Project saveOrUpdateProject(Project project) {
 
 		try {
 			
 			project.setProjectIdentifer(project.getProjectIdentifer().toUpperCase());
+
+			if(project.getId() == null){
+				Backlog backlog = new Backlog();
+				project.setBacklog(backlog);
+				backlog.setProject(project);
+				backlog.setProjectIdentifier(project.getProjectIdentifer().toUpperCase());
+			}
+
+			if(project.getId() != null){
+				project.setBacklog(backlogRepository.findByProjectIdentifier(project.getProjectIdentifer().toUpperCase()));
+			}
+
 			return projectRepository.save(project);
 			
 		} catch (Exception e) {
